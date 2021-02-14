@@ -1,6 +1,6 @@
 # Git commit viewer
 
-## 1. List commits using GitHub url
+## List commits using GitHub url
 
 ```
 cd src

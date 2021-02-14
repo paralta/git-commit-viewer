@@ -12,7 +12,7 @@ python3 main.py
 ```
 cd src
 python3 app.py
-curl -X POST http://localhost:5000/commit_viewer -H 'Content-Type: application/json' -d '{"url": "<url>", "branch": "<branch>"}'
+curl -X POST http://localhost:5000/commit_viewer -H 'Content-Type: application/json' -d '{"url": "<url>", "branch": "<branch>", "num_commits": <num_commits>}'
 ```
 
 ## Run unit tests

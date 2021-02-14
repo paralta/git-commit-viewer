@@ -1,6 +1,7 @@
 import logging
 import unittest
 import subprocess
+from parser import CommitParser
 
 
 class CommitRetriever:
@@ -10,7 +11,7 @@ class CommitRetriever:
     url = ''
     branch = ''
     repository_dir = ''
-    commits = ''
+    commits = []
 
     def __init__(self, url, branch):
         self.url = url
@@ -61,8 +62,9 @@ class CommitRetriever:
         if result.stderr:
             return False
 
-        # Set commits
-        self.commits = result.stdout.decode("utf-8")
+        # Parse raw commit data
+        parser = CommitParser(result.stdout.decode("utf-8"))
+        self.commits = parser.get_commits()
         return True
 
     def process_commits(self):

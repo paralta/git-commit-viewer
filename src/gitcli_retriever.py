@@ -35,7 +35,6 @@ class GitCLICommitRetriever:
         # If thread is still active when timeout finishes
         if p.is_alive():
             p.terminate()
-            p.join()
             return [], 'Commit retriever timed out'
 
         return return_dict[0]['commits'], return_dict[0]['err']

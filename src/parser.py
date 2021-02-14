@@ -86,14 +86,16 @@ class TestCommitInformationParser(unittest.TestCase):
     def test_commit(self):
         cp = CommitParser(
             'commit abcd\nAuthor: someone\nDate:   someday\n\n    some message')
-        self.assertEqual(cp.get_commits(), [
+        c, _ = cp.get_commits()
+        self.assertEqual(c, [
                          {'sha': 'abcd', 'author': 'someone', 'date': 'someday', 'message': ['some message']}])
 
     def test_invalid_commit(self):
         cp = CommitParser('')
-        self.assertEqual(cp.get_commits(), [])
+        c, _ = cp.get_commits()
+        self.assertEqual(c, [])
 
 
 if __name__ == '__main__':
-    logging.info('Running User Input URL Validation tests')
+    logging.info('Running Commit Parser tests')
     unittest.main()

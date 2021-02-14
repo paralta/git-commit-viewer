@@ -126,5 +126,5 @@ class Test3LogRepository(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    logging.info('Running User Input URL Validation tests')
+    logging.info('Running Commit Retriever tests')
     unittest.main()

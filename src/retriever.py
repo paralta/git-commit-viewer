@@ -63,6 +63,7 @@ class CommitRetriever:
             return False
 
         # Parse raw commit data
+        logging.info('Start Commit Parser')
         parser = CommitParser(result.stdout.decode("utf-8"))
         self.commits = parser.get_commits()
         return True

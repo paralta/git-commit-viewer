@@ -12,12 +12,18 @@ class CommitRetriever:
     branch = ''
     repository_dir = ''
     commits = []
+    error = ''
 
     def __init__(self, url, branch):
         self.url = url
         self.branch = branch
         self.repository_dir = 'repositories/' + \
             url.split('/')[-1].replace('.git', '')
+
+    def handle_error(self, error_message):
+        # Log and save error message
+        logging.error(error_message)
+        self.error = error_message
 
     def clone_repository(self):
         # Clone repository from url specified by user
@@ -33,7 +39,7 @@ class CommitRetriever:
             elif 'Cloning into' in err and not 'not found' in err:
                 return True
             else:  # e.g. repository not found
-                logging.error(err)
+                self.handle_error(err)
                 return False
         return True
 
@@ -49,7 +55,7 @@ class CommitRetriever:
                 logging.warning(err)
                 return True
             else:  # e.g. branch not found
-                logging.error(err)
+                self.handle_error(err)
                 return False
         return True
 
@@ -60,12 +66,14 @@ class CommitRetriever:
 
         # Handle errors
         if result.stderr:
+            err = result.stderr.decode("utf-8")
+            self.handle_error(err)
             return False
 
         # Parse raw commit data
         logging.info('Start Commit Parser')
         parser = CommitParser(result.stdout.decode("utf-8"))
-        self.commits = parser.get_commits()
+        self.commits, self.error = parser.get_commits()
         return True
 
     def process_commits(self):
@@ -78,7 +86,7 @@ class CommitRetriever:
 
     def get_commits(self):
         self.process_commits()
-        return self.commits
+        return self.commits, self.error
 
 
 class Test1CloneRepository(unittest.TestCase):

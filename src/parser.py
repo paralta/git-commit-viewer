@@ -9,15 +9,21 @@ class CommitParser:
     '''
     raw_input = ''
     commits = []
+    error = ''
 
     def __init__(self, raw):
         self.raw_input = raw
+
+    def handle_error(self, error_message):
+        # Log and save error message
+        logging.error(error_message)
+        self.error = error_message
 
     def parse_commit(self, raw_commit_info):
         # Split each commit line
         raw_commit_info = raw_commit_info.split('\n')
         if len(raw_commit_info) < 5:
-            logging.error('Incomplete commit information')
+            self.handle_error('Incomplete commit information')
             return False
 
         # Init index to iterate over commit information lines
@@ -30,8 +36,7 @@ class CommitParser:
         while raw_commit_info[indx].find('Author:') == -1:
             indx = indx + 1
             if indx == len(raw_commit_info):
-                logging.error(
-                    'Author information not found for at least one commit')
+                self.handle_error('Author information not found for at least one commit')
                 return False
         author = raw_commit_info[indx].replace('Author:', '').lstrip()
         author = re.sub("[\<].*?[\>]", "", author)
@@ -40,16 +45,14 @@ class CommitParser:
         while raw_commit_info[indx].find('Date:') == -1:
             indx = indx + 1
             if indx == len(raw_commit_info):
-                logging.error(
-                    'Date information not found for at least one commit')
+                self.handle_error('Date information not found for at least one commit')
                 return False
         date = raw_commit_info[indx].replace('Date:', '').lstrip()
 
         # Parse multiple message info
         indx = indx + 1
         if indx == len(raw_commit_info):
-            logging.error(
-                'Message information not found for at least one commit')
+            self.handle_error('Message information not found for at least one commit')
             return False
         message = []
         for i in raw_commit_info[indx:]:
@@ -74,9 +77,9 @@ class CommitParser:
 
     def get_commits(self):
         if self.parse():
-            return self.commits
+            return self.commits, self.error
         else:
-            return []
+            return [], self.error
 
 
 class TestCommitInformationParser(unittest.TestCase):
